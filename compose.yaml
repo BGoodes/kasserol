@@ -6,7 +6,7 @@ services:
     ports:
       - "6060:80"
     volumes:
-      - "./src/style:/usr/share/nginx/html"
+      - "./src:/usr/share/nginx/html"
       - "./docker-web/log:/var/log/nginx"
       - "./docker-web/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
 
@@ -15,4 +15,4 @@ services:
     expose:
       - 9000
     volumes:
-      - ./src/style:/var/www/html/
+      - ./src:/var/www/html/
