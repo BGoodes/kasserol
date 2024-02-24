@@ -7,23 +7,30 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 
     <title>Kasserol</title>  
 </head>
 <body>
+    <!-- Header -->
+    <div id="header"></div>
+
+    <!-- Main Content -->
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Kasserol</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="text-center">A simple inventory management app</h2>
-            </div>
+        <div class="jumbotron mt-5">
+            <h1 class="display-4">Welcome to Kasserol!</h1>
+            <p class="lead">THE BEST SOLUTION for managing inventories.</p>
+            <hr class="my-4">
+            <p>Click below to do login.</p>
+            <a class="btn btn-primary btn-lg" href="" role="button">Login</a>
         </div>
     </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
