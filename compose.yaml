@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   nginx:
-    image: nginx:latest
+    build: ./docker-web/
     ports:
       - "6060:80"
     volumes:
@@ -10,9 +10,31 @@ services:
       - "./docker-web/log:/var/log/nginx"
       - "./docker-web/nginx/nginx.conf:/etc/nginx/nginx.conf:ro"
 
+  db:
+    build: ./docker-mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: my_secret_pw_shh
+      MYSQL_DATABASE: kasserol_db
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpass
+    # volumes:
+      # - ./docker-mysql/data:/var/lib/mysql
+      # - ./docker-mysql/conf.d:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+
   php:
     build: ./docker-php/
-    expose:
-      - 9000
+    ports:
+      - "9000:9000"
     volumes:
       - ./src:/var/www/html/
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8282:80
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
