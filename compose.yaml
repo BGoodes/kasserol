@@ -17,9 +17,9 @@ services:
       MYSQL_DATABASE: kasserol_db
       MYSQL_USER: devuser
       MYSQL_PASSWORD: devpass
-    # volumes:
-      # - ./docker-mysql/data:/var/lib/mysql
-      # - ./docker-mysql/conf.d:/etc/mysql/conf.d
+    volumes:
+      - ./docker-mysql/data:/var/lib/mysql
+      - ./docker-mysql/conf.d:/etc/mysql/conf.d
     ports:
       - "3306:3306"
 
