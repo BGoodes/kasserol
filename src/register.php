@@ -1,6 +1,5 @@
 <?php
-include_once 'config/database.php';
-include_once 'assets/models/user.php';
+include_once 'config/config.php';
 
 // Initialize error variables
 $firstNameErr = $lastNameErr = $emailErr = $passwordErr = $confirmPasswordErr = $phoneErr = "";

@@ -1,3 +1,13 @@
+<?php
+include_once 'config/config.php';
+
+// Create an instance of the User class
+$user = new User($conn);
+
+// Check if the user is logged in
+$isUserLoggedIn = $user->isUserLoggedIn();
+?>
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="index.php">Kasserol</a>
 
@@ -12,18 +22,25 @@
             </li>
             
             <!-- Ajout des liens vers les pages publiques -->
-            <li class="nav-item">
-                <a class="nav-link" href="register.php">Register</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="login.php">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="list_associations.php">Liste des assos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="association_stocks.php">Stocks des assos</a>
-            </li>
+            <?php if (!$isUserLoggedIn) { ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="register.php">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="login.php">Login</a>
+                </li>
+            <?php } else { ?>
+                <!-- Additional links for logged-in users can be added here -->
+                <!-- For example, a link to the user's profile or a logout option -->
+                <li class="nav-item">
+                    <a class="nav-link" href="registered_user/profile.php">
+                        Profile (<?php echo $user->getUserName($_SESSION['user_id']); ?>)
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="registered_user/logout.php">Logout</a>
+                </li>
+            <?php } ?>
             <!-- Fin des liens vers les pages publiques -->
 
         </ul>

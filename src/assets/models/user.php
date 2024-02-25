@@ -1,10 +1,22 @@
 <?php
-
 class User {
     private $conn;
 
     public function __construct($conn) {
         $this->conn = $conn;
+    }
+
+    public function startSession($userId) {
+        $_SESSION['user_id'] = $userId;
+    }
+
+    public function endSession() {
+        session_unset();
+        session_destroy();
+    }
+
+    public function isUserLoggedIn() {
+        return isset($_SESSION['user_id']);
     }
 
     public function registerUser($firstName, $lastName, $email, $password, $phone) {
@@ -40,8 +52,6 @@ class User {
             return false;
         }
     }
-    
-
 
     public function loginUser($email, $password) {
         $query = "SELECT id, hash FROM users WHERE email = :email";
@@ -77,6 +87,23 @@ class User {
     {
         return filter_var($email, FILTER_SANITIZE_EMAIL);
     }
+
+    
+    public function getUserName($userId) {
+        $query = "SELECT firstName FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$user) {
+            return false; // Unable to fetch user name
+        }
+
+        return $user['firstName']; // Return user's first name
+    }
 }
+
 
 ?>
