@@ -17,7 +17,7 @@ if (isset($_GET['association_id'])) {
     $association = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Fetch the equipment of the association from the database + number taken per equipment
-    $query = "SELECT m.*, SUM(t.number) taken FROM transactions t JOIN materials m ON materialId = m.id WHERE associationId = :association_id GROUP BY materialId;";
+    $query = "SELECT m.*, COALESCE(SUM(t.number), 0) taken FROM transactions t RIGHT JOIN materials m ON materialId = m.id WHERE associationId = :association_id GROUP BY m.id;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':association_id', $association_id);
     $stmt->execute();
