@@ -1,3 +1,8 @@
+<?php
+include_once 'config/config.php';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +14,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets">
+    <link rel="stylesheet" href="assets/style.css"> <!-- Replace 'style.css' with your actual custom styles file -->
 
     <title>Kasserol</title>  
 </head>
@@ -23,8 +28,8 @@
             <h1 class="display-4">Welcome to Kasserol!</h1>
             <p class="lead">THE BEST SOLUTION for managing inventories.</p>
             <hr class="my-4">
-            <p>Click below to do login.</p>
-            <a class="btn btn-primary btn-lg" href="" role="button">Login</a>
+            <p>Click below to log in.</p>
+            <a class="btn btn-primary btn-lg" href="login.php" role="button">Login</a>
         </div>
     </div>
 
