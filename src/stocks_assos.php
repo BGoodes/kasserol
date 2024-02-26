@@ -8,6 +8,8 @@ require_once 'config/config.php';
 if (isset($_GET['association_id'])) {
     // Get the association_id from the URL
     $association_id = $_GET['association_id'];
+    $user = new User($conn);
+    $userIsLoggedIn = $user->isUserLoggedIn();
 
     // Fetch the association from the database
     $query = "SELECT * FROM associations WHERE id = :association_id";
@@ -16,12 +18,18 @@ if (isset($_GET['association_id'])) {
     $stmt->execute();
     $association = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Fetch the equipment of the association from the database + number taken per equipment
-    $query = "SELECT m.*, COALESCE(SUM(t.number), 0) taken FROM transactions t RIGHT JOIN materials m ON materialId = m.id WHERE associationId = :association_id GROUP BY m.id;";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':association_id', $association_id);
-    $stmt->execute();
-    $equipment = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Check if the association is not null
+    if ($association !== null) {
+        // Fetch the equipment of the association from the database + number taken per equipment
+        $query = "SELECT m.*, COALESCE(SUM(t.number), 0) taken FROM transactions t RIGHT JOIN materials m ON materialId = m.id WHERE associationId = :association_id GROUP BY m.id;";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':association_id', $association_id);
+        $stmt->execute();
+        $equipment = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        // If the association is not found, display an error message
+        echo "Association not found.";
+    }
 } else {
     // If the association_id parameter is not provided, display an error message
     echo "Association ID is missing.";
@@ -50,8 +58,10 @@ if (isset($_GET['association_id'])) {
                     <th scope="col">Name</th>
                     <th scope="col">Description</th>
                     <th scope="col">Number available / Total number</th>
-                    <th scope="col" class="text-center">Actions</th>
-                    <!-- Add more table headers as needed -->
+                    <?php if ($userIsLoggedIn) : ?>
+                        <th scope="col" class="text-center">Actions</th>
+                    <?php endif; ?>
+                        <!-- Add more table headers as needed -->
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +70,7 @@ if (isset($_GET['association_id'])) {
                         <td><?php echo $item['name']; ?></td>
                         <td><?php echo $item['description']; ?></td>
                         <td><?php echo $item['number'] - $item['taken']; ?> / <?php echo $item['number']; ?></td>
+                        <?php if ($userIsLoggedIn) : ?>
                         <td class="text-center">
                             <?php if ($item['number'] - $item['taken'] > 0) : ?>
                                 <a href="borrow.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-primary">Borrow</button></a>
@@ -68,6 +79,7 @@ if (isset($_GET['association_id'])) {
                                 <a href="return.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-secondary">Return</button></a>
                             <?php endif; ?>
                         </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
