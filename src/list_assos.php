@@ -34,7 +34,11 @@ include 'components/header.php';
     <h2>List of Associations</h2>
     <ul>
         <?php foreach ($associations as $association) : ?>
-            <li><?php echo $association['name']; ?></li>
+            <li>
+                <a href="stocks_assos.php?association_id=<?php echo $association['id']; ?>">
+                    <?php echo $association['name']; ?>
+                </a>
+            </li>
         <?php endforeach; ?>
     </ul>
 </div>
