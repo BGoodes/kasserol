@@ -1,4 +1,6 @@
 <?php
+ob_start();
+
 include_once 'config/config.php';
 
 // Initialize error variables
@@ -35,15 +37,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             echo 'Login successful! User ID: ' . $userId;
             // Add further actions after successful login if needed
+            header("Location: registered_user/profile.php");
+            exit;
         } else {
             echo 'Invalid email or password. Please try again.';
         }
     }
 }
+
+ob_end_flush();
 ?>
 
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">

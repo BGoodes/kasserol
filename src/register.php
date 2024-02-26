@@ -1,4 +1,6 @@
 <?php
+ob_start();
+
 include_once 'config/config.php';
 
 // Initialize error variables
@@ -56,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $registrationResult = $user->registerUser($firstName, $lastName, $email, $password, $phone);
 
         if ($registrationResult) {
+            header("Location: login.php");
             echo 'Registration successful!';
         } else {
             echo 'Registration failed. Please try again.';
@@ -63,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+ob_end_flush();
 ?>
 
 
