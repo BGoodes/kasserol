@@ -9,8 +9,15 @@ if (isset($_GET['association_id'])) {
     // Get the association_id from the URL
     $association_id = $_GET['association_id'];
 
-    // Fetch the equipment of the association from the database
-    $query = "SELECT * FROM materials WHERE associationId = :association_id";
+    // Fetch the association from the database
+    $query = "SELECT * FROM associations WHERE id = :association_id";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':association_id', $association_id);
+    $stmt->execute();
+    $association = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Fetch the equipment of the association from the database + number taken per equipment
+    $query = "SELECT m.*, SUM(t.number) taken FROM transactions t JOIN materials m ON materialId = m.id WHERE associationId = :association_id GROUP BY materialId;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':association_id', $association_id);
     $stmt->execute();
@@ -35,15 +42,15 @@ if (isset($_GET['association_id'])) {
     <?php include 'components/header.php'; ?>
 
     <div class="container mt-5">
-        <h2>Equipment List</h2>
+        <h2>Equipment List for <?php echo $association['name']; ?></h2>
         <!-- Display the equipment list -->
-        <table class="table">
+        <table class="table table-bordered table-hover">
             <thead>
                 <tr>
-                    <th scope="col">Equipment ID</th>
-                    <th scope="col">Equipment Name</th>
-                    <th scope="col">Number</th>
-                    <th scope="col">Association ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Number available / Total number</th>
+                    <th scope="col" class="text-center">Actions</th>
                     <!-- Add more table headers as needed -->
                 </tr>
             </thead>
@@ -52,8 +59,15 @@ if (isset($_GET['association_id'])) {
                     <tr>
                         <td><?php echo $item['name']; ?></td>
                         <td><?php echo $item['description']; ?></td>
-                        <td><?php echo $item['number']; ?></td>
-                        <td><?php echo $item['associationId']; ?></td>
+                        <td><?php echo $item['number'] - $item['taken']; ?> / <?php echo $item['number']; ?></td>
+                        <td class="text-center">
+                            <?php if ($item['number'] - $item['taken'] > 0) : ?>
+                                <a href="borrow.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-primary">Borrow</button></a>
+                            <?php endif; ?>
+                            <?php if ($item['taken'] > 0) : ?>
+                                <a href="return.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-secondary">Return</button></a>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
