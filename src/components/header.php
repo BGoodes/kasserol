@@ -41,6 +41,9 @@ $isUserLoggedIn = $user->isUserLoggedIn();
                     <a class="nav-link" href="registered_user/logout.php">Logout</a>
                 </li>
             <?php } ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="list_assos.php">Associations</a>
+                </li>
             <!-- Fin des liens vers les pages publiques -->
 
         </ul>
