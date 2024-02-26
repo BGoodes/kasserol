@@ -77,13 +77,13 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
     }
 
-    private function filterStringPolyfill(string $string): string
+    public function filterStringPolyfill(string $string): string
     {
         $str = preg_replace('/\x00|<[^>]*>?/', '', $string);
         return str_replace(["'", '"'], ['&#39;', '&#34;'], $str);
     }
 
-    private function filterEmailPolyfill(string $email): string
+    public function filterEmailPolyfill(string $email): string
     {
         return filter_var($email, FILTER_SANITIZE_EMAIL);
     }
@@ -103,7 +103,41 @@ class User {
 
         return $user['firstName']; // Return user's first name
     }
+
+    public function getUserData($userId) {
+        $query = "SELECT * FROM users WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+    
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$user) {
+            return false; // Unable to fetch user data
+        }
+    
+        return $user; // Return user data
+    }
+
+    public function updateUserInfo($userId, $updatedFirstName, $updatedLastName, $updatedEmail, $updatedPhone) {
+        // SQL query to update user information
+        $query = "UPDATE users SET firstName = ?, lastName = ?, email = ?, phone = ? WHERE id = ?";
+        
+        // Prepare the query
+        $stmt = $this->conn->prepare($query);
+    
+        // Bind parameters
+        $stmt->bindParam(1, $updatedFirstName);
+        $stmt->bindParam(2, $updatedLastName);
+        $stmt->bindParam(3, $updatedEmail);
+        $stmt->bindParam(4, $updatedPhone);
+        $stmt->bindParam(5, $userId);
+    
+        // Execute the query
+        return $stmt->execute();
+    }
 }
+
 
 
 ?>
