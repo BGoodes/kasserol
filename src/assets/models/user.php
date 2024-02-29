@@ -132,6 +132,43 @@ class User {
             return false;
         }
     }
+
+    public function borrowMaterial($userId, $materialId, $quantity) {
+        $query = "SELECT m.number, COALESCE(SUM(t.number), 0) taken FROM materials m JOIN transactions t ON m.id = t.materialId WHERE m.id = ?";
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $materialId, PDO::PARAM_INT);
+            $stmt->execute();
+            $material = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($material['number'] - $material['taken'] < $quantity) {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return false;
+        }
+        $query = "INSERT INTO transactions (userId, materialId, quantity, date) VALUES (?, ?, :quantity, NOW()) ON DUPLICATE KEY UPDATE quantity = quantity + :quantity";
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $materialId, PDO::PARAM_INT);
+            $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function returnMaterial($userId, $materialId) {
+        $query = "DELETE FROM transactions WHERE userId = ? AND materialId = ?";
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $materialId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 
 ?>
