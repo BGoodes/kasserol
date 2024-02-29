@@ -9,18 +9,18 @@ $isUserLoggedIn = $user->isUserLoggedIn();
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="http://<?php echo $_SERVER['HTTP_HOST'] ?>/kasserol/src/index.php">Kasserol</a>
+    <a class="navbar-brand" href="http://<?php echo $_SERVER['HTTP_HOST'] ?>/index.php">Kasserol</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    
+
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item active">
                 <a class="nav-link" href="http://<?php echo $_SERVER['HTTP_HOST'] ?>/index.php">Home</a>
             </li>
-            
+
             <!-- Ajout des liens vers les pages publiques -->
             <?php if (!$isUserLoggedIn) { ?>
                 <li class="nav-item">
