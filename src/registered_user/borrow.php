@@ -58,7 +58,7 @@ ob_end_flush();
                     <input type="hidden" name="material_id" value="<?php echo $materialId; ?>">
                     <div class="form-group">
                             <label for="quantity">Quantity:</label>
-                            <input type="number" class="form-control" name="quantity" min="0">
+                            <input type="number" class="form-control" name="quantity" autofocus="autofocus" min="0">
                             <span class="text-danger"><?php echo isset($quantityErr) ? $quantityErr : ''; ?></span>
                     </div>
 
