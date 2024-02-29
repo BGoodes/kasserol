@@ -141,19 +141,23 @@ class User {
             $stmt->execute();
             $material = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($material['number'] - $material['taken'] < $quantity) {
+                echo " ERROR : Not enough materials available.";
                 return false;
             }
         } catch (PDOException $e) {
+            echo " ERROR : Not able to fetch material details.";
             return false;
         }
-        $query = "INSERT INTO transactions (userId, materialId, quantity, date) VALUES (?, ?, :quantity, NOW()) ON DUPLICATE KEY UPDATE quantity = quantity + :quantity";
+        $query = "INSERT INTO transactions (userId, materialId, number, date) VALUES (:userid, :materialid, :quantity, NOW()) ON DUPLICATE KEY UPDATE number = number + :quantity";
         try {
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(1, $userId, PDO::PARAM_INT);
-            $stmt->bindParam(2, $materialId, PDO::PARAM_INT);
+            $stmt->bindParam(':userid', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':materialid', $materialId, PDO::PARAM_INT);
             $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
+            echo " ERROR : Not able to borrow material. Please try again.";
+            echo "\n $e";
             return false;
         }
     }
