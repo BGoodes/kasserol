@@ -11,9 +11,9 @@ CREATE TABLE users (
 CREATE TABLE associations (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
-  managerId INT NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (managerId) REFERENCES users(id)
+  email VARCHAR(45) NOT NULL,
+  pwd VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE materials (
@@ -42,10 +42,10 @@ INSERT INTO users (firstName, lastName, hash, email, phone) VALUES
 ('Jane', 'Smith', 'hash2', 'janesmith@example.com', '9876543210'),
 ('Michael', 'Johnson', 'hash3', 'michaeljohnson@example.com', '5555555555');
 
-INSERT INTO associations (name, managerId) VALUES
-('Cooking Club', 1),
-('Afterwork Group', 2),
-('Sports Team', 3);
+INSERT INTO associations (name, email, pwd) VALUES
+('Cooking Club', 'cookingclub@example.com', 'password123'),
+('Afterwork Group', 'afterworkgroup@example.com', 'password456'),
+('Sports Team', 'sportsteam@example.com', 'password789');
 
 INSERT INTO materials (name, description, barcode, number, associationId) VALUES
 ('Cooking Utensils', 'Various utensils for cooking', '321', 10, 1),

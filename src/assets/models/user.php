@@ -132,6 +132,78 @@ class User {
             return false;
         }
     }
+
+    public function borrowMaterial($userId, $materialId, $quantity) {
+        $query = "SELECT m.number, COALESCE(SUM(t.number), 0) taken FROM materials m JOIN transactions t ON m.id = t.materialId WHERE m.id = ?";
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $materialId, PDO::PARAM_INT);
+            $stmt->execute();
+            $material = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($material['number'] - $material['taken'] < $quantity) {
+                echo " ERROR : Not enough materials available.";
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo " ERROR : Not able to fetch material details.";
+            return false;
+        }
+        $query = "INSERT INTO transactions (userId, materialId, number, date) VALUES (:userid, :materialid, :quantity, NOW()) ON DUPLICATE KEY UPDATE number = number + :quantity";
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':userid', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':materialid', $materialId, PDO::PARAM_INT);
+            $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo " ERROR : Not able to borrow material. Please try again.";
+            echo "\n $e";
+            return false;
+        }
+    }
+
+    public function returnMaterial($userId, $materialId, $quantity) {
+        echo "returnMaterial($userId, $materialId, $quantity)";
+        if (!is_null($quantity)) {
+            $query = "SELECT number FROM transactions WHERE userId = ? AND materialId = ?";
+            try {
+                $stmt = $this->conn->prepare($query);
+                $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+                $stmt->bindParam(2, $materialId, PDO::PARAM_INT);
+                $stmt->execute();
+                $material = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($material['number'] < $quantity) {
+                    echo " ERROR : Not enough materials to return.";
+                    return false;
+                }
+            } catch (PDOException $e) {
+                echo " ERROR : Not able to fetch material details.";
+                return false;
+            }
+
+            if ($material['number'] != $quantity) {
+                $query = "UPDATE transactions SET number = number - ? WHERE userId = ? AND materialId = ?";
+                try {
+                    $stmt = $this->conn->prepare($query);
+                    $stmt->bindParam(1, $quantity, PDO::PARAM_INT);
+                    $stmt->bindParam(2, $userId, PDO::PARAM_INT);
+                    $stmt->bindParam(3, $materialId, PDO::PARAM_INT);
+                    return $stmt->execute();
+                } catch (PDOException $e) {
+                    return false;
+                }
+            }
+        }
+        $query = "DELETE FROM transactions WHERE userId = ? AND materialId = ?";
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+            $stmt->bindParam(2, $materialId, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 
 ?>

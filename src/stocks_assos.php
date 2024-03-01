@@ -73,10 +73,10 @@ if (isset($_GET['association_id'])) {
                         <?php if ($userIsLoggedIn) : ?>
                         <td class="text-center">
                             <?php if ($item['number'] - $item['taken'] > 0) : ?>
-                                <a href="borrow.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-primary">Borrow</button></a>
+                                <a href="/registered_user/borrow.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-primary">Borrow</button></a>
                             <?php endif; ?>
                             <?php if ($item['taken'] > 0) : ?>
-                                <a href="return.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-secondary">Return</button></a>
+                                <a href="/registered_user/return.php?material_id=<?php echo $item['id']; ?>"><button class="btn btn-secondary">Return</button></a>
                             <?php endif; ?>
                         </td>
                         <?php endif; ?>
